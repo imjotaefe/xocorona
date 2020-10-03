@@ -4,11 +4,12 @@ import { colors } from './assets/styles';
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: colors.primary,
   },
   topContainer: {
     paddingTop: 50,
     paddingBottom: 20,
-    backgroundColor: colors.primary,
+
     alignItems: 'center',
   },
   slide: {
@@ -72,6 +73,9 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     flexDirection: 'row',
   },
+  cardsContainer:{
+    alignItems: 'center'
+  }
 });
 
 export default styles;

@@ -1,12 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, Dimensions, ActivityIndicator } from 'react-native';
+import { View, Text, Dimensions, ActivityIndicator, ScrollView } from 'react-native';
 import styles from './styles';
 import moment from 'moment';
 import Carousel from 'react-native-snap-carousel';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import axios from 'axios';
-import RNPickerSelect, { defaultStyles } from 'react-native-picker-select';
-import {getCities, getData} from './reqs';
+import RNPickerSelect from 'react-native-picker-select';
+import { getCities, getData } from './reqs';
+import Card from './components/Card';
+
 
 const AppMain = () => {
   const [data, setData] = useState(null);
@@ -15,6 +17,25 @@ const AppMain = () => {
   const [states, setStates] = useState([]);
   const [cities, setCities] = useState([]);
   const [loading, setLoading] = useState(false);
+
+  const simpleSymptoms = ['Febre', 'Tosse seca', 'Cansaço']
+
+  const mediumSymptoms = [
+    'Dores e desconfortos',
+    'Dor de garganta',
+    'Diarreia',
+    'Conjuntivite',
+    'Dor de cabeça',
+    'Perda de paladar ou olfato',
+    'Erupção cutânea na pele ou descoloração dos dedos das mãos ou dos pés'
+  ]
+    
+  const hardSymptoms = [
+    'Dificuldade de respirar ou falta de ar',
+    'Dor ou pressão no peito',
+    'Perda de fala ou movimento'
+  ]
+
 
   useEffect(() => {
     setLoading(true);
@@ -64,14 +85,14 @@ const AppMain = () => {
 
   const myDate = moment(new Date(data?.date).toString()).format("DD/MM/YYYY - HH:mm");
   return (
-    <View style={styles.container} >
+    <ScrollView style={styles.container} >
       <View style={styles.topContainer}>
         <Carousel
           ref={carouselRef}
           data={data ? [
             { id: 1, title: 'Mortes', count: data?.deaths },
             { id: 2, title: 'Casos', count: data?.confirmed },
-            { id: 3, title: 'Letalidade', count: data?.death_rate * 100 + '%' },
+            { id: 3, title: 'Letalidade', count: (data?.death_rate * 100).toFixed(2) + '%' },
           ] : [{}, {}, {}]}
           renderItem={renderTopCard}
           sliderWidth={Dimensions.get('window').width}
@@ -129,12 +150,24 @@ const AppMain = () => {
             }}
           />
         </View>
+        {data &&
+          <Text style={styles.textDate}>ÚLTIMA ATUALIZAÇÃO: {myDate}</Text>
+        }
+      </View>
+      <View style={styles.cardsContainer}>
+        <Card title='Sintomas mais comuns' symptoms={simpleSymptoms} />
 
-        <Text style={styles.textDate}>ÚLTIMA ATUALIZAÇÃO: {myDate}</Text>
+        <Card title='Sintomas menos comuns' symptoms={mediumSymptoms}/>
+
+        <Card title='Sintomas graves' symptoms={hardSymptoms}/>
+
+            
+
       </View>
 
 
-    </View>
+
+    </ScrollView>
   )
 }
 
